@@ -19,11 +19,18 @@ public class PlayerMovement : NetworkBehaviour
 
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
-        Vector3 move = new Vector3(moveX, 0, moveZ).normalized * moveSpeed;
+        bool jumpPressed = Input.GetButtonDown("Jump");
 
+        MoveServerRpc(moveX, moveZ, jumpPressed);
+    }
+
+    [ServerRpc]
+    private void MoveServerRpc(float moveX, float moveZ, bool jump)
+    {
+        Vector3 move = new Vector3(moveX, 0, moveZ).normalized * moveSpeed;
         rb.linearVelocity = new Vector3(move.x, rb.linearVelocity.y, move.z);
 
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (jump && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
