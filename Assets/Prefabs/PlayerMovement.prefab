@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5271592255081500893}
   - component: {fileID: 1393910607835476626}
   - component: {fileID: 1019377585840743458}
+  - component: {fileID: -8118191964931824713}
   m_Layer: 0
   m_Name: PlayerMovement
   m_TagString: Untagged
@@ -186,3 +187,16 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   moveSpeed: 5
   jumpForce: 5
+--- !u!114 &-8118191964931824713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7546055167980371915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edd9d34d8fd2343478a635ffc3b4d73b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSetup
+  ShowTopMostFoldoutHeaderGroup: 1
