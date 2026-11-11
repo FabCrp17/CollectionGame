@@ -10,6 +10,8 @@ public class ConnectionUI : MonoBehaviour
     public Button hostButton;
     public Button clientButton;
 
+    public GameObject canvasHUD;
+
     private void Start()
     {
         hostButton.onClick.AddListener(StartHost);
@@ -18,15 +20,25 @@ public class ConnectionUI : MonoBehaviour
 
     private void StartHost()
     {
+        var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        transport.ConnectionData.Address = "127.0.0.1";
+
         NetworkManager.Singleton.StartHost();
+
         gameObject.SetActive(false);
+        canvasHUD.SetActive(true);
+
     }
 
     private void StartClient()
     {
         var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-        transport.ConnectionData.Address = ipInputField.text;
+        string ip = string.IsNullOrEmpty(ipInputField.text) ? "127.0.0.1" : ipInputField.text;
+        transport.ConnectionData.Address = ip;
+
         NetworkManager.Singleton.StartClient();
+
         gameObject.SetActive(false);
+        canvasHUD.SetActive(true);
     }
 }

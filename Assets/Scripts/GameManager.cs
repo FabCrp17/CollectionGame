@@ -20,7 +20,7 @@ public class GameManager : NetworkBehaviour
         if (IsServer)
         {
             isGameActive.Value = true;
-            internalTimer = 300f; 
+            internalTimer = 100f; 
         }
     }
 
