@@ -188,6 +188,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   moveSpeed: 5
   jumpForce: 5
+  cameraOffset: {x: 0, y: 8, z: -6}
 --- !u!114 &-8118191964931824713
 MonoBehaviour:
   m_ObjectHideFlags: 0

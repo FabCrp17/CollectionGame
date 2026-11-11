@@ -1,7 +1,8 @@
+using System.Net;
+using TMPro;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
-using TMPro;
 using UnityEngine.UI;
 
 public class ConnectionUI : MonoBehaviour
@@ -20,6 +21,7 @@ public class ConnectionUI : MonoBehaviour
 
     private void StartHost()
     {
+
         var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         transport.ConnectionData.Address = "127.0.0.1";
 
@@ -32,6 +34,12 @@ public class ConnectionUI : MonoBehaviour
 
     private void StartClient()
     {
+
+        if (string.IsNullOrWhiteSpace(ipInputField.text) || !IPAddress.TryParse(ipInputField.text, out _))
+        {
+            return;
+        }
+
         var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         string ip = string.IsNullOrEmpty(ipInputField.text) ? "127.0.0.1" : ipInputField.text;
         transport.ConnectionData.Address = ip;
