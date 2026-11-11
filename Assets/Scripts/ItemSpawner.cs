@@ -29,7 +29,11 @@ public class ItemSpawner : NetworkBehaviour
     private void SpawnItem()
     {
 
-        if (GameManager.Instance != null && !GameManager.Instance.isGameActive.Value)
+        if (GameManager.Instance == null) return;
+
+        if (GameManager.Instance.isWaitingForPlayers.Value) return;
+
+        if (!GameManager.Instance.isGameActive.Value)
         {
             CancelInvoke(nameof(SpawnItem));
             return;

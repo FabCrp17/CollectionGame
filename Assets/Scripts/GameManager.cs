@@ -8,6 +8,8 @@ public class GameManager : NetworkBehaviour
     public NetworkVariable<int> timeRemaining = new NetworkVariable<int>(300);
     public NetworkVariable<bool> isGameActive = new NetworkVariable<bool>(false);
 
+    public NetworkVariable<bool> isWaitingForPlayers = new NetworkVariable<bool>(true);
+
     private float internalTimer;
 
     private void Awake()
@@ -19,27 +21,61 @@ public class GameManager : NetworkBehaviour
     {
         if (IsServer)
         {
+            isWaitingForPlayers.Value = true;
             isGameActive.Value = true;
-            internalTimer = 100f; 
+            internalTimer = 100f;
+
+            NetworkManager.Singleton.OnClientDisconnectCallback += HandlePlayerDisconnect;
         }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (IsServer && NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback -= HandlePlayerDisconnect;
+        }
+    }
+
+    private void HandlePlayerDisconnect(ulong clientId)
+    {
+        isWaitingForPlayers.Value = true;
+        isGameActive.Value = false;
+
+        internalTimer = 300f;
+        timeRemaining.Value = 300;
     }
 
     private void Update()
     {
-        if (!IsServer || !isGameActive.Value) return;
+        if (!IsServer) return;
 
-        internalTimer -= Time.deltaTime;
-        int secondsLeft = Mathf.CeilToInt(internalTimer);
-
-        if (secondsLeft != timeRemaining.Value)
+        if (isWaitingForPlayers.Value)
         {
-            timeRemaining.Value = secondsLeft;
+            if (NetworkManager.Singleton.ConnectedClients.Count >= 2)
+            {
+                isWaitingForPlayers.Value = false;
+                isGameActive.Value = true;
+            }
+            return;
         }
 
-        if (internalTimer <= 0)
+        if (isGameActive.Value)
         {
-            timeRemaining.Value = 0;
-            isGameActive.Value = false;
+            internalTimer -= Time.deltaTime;
+            int secondsLeft = Mathf.CeilToInt(internalTimer);
+
+            if (secondsLeft != timeRemaining.Value)
+            {
+                timeRemaining.Value = secondsLeft;
+            }
+
+            if (internalTimer <= 0)
+            {
+                timeRemaining.Value = 0;
+                isGameActive.Value = false;
+            }
         }
     }
+
 }

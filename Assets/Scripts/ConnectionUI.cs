@@ -10,6 +10,7 @@ public class ConnectionUI : MonoBehaviour
     public TMP_InputField ipInputField;
     public Button hostButton;
     public Button clientButton;
+    public Button quitButton;
 
     public GameObject canvasHUD;
 
@@ -17,6 +18,7 @@ public class ConnectionUI : MonoBehaviour
     {
         hostButton.onClick.AddListener(StartHost);
         clientButton.onClick.AddListener(StartClient);
+        quitButton.onClick.AddListener(QuitGame);
     }
 
     private void StartHost()
@@ -48,5 +50,10 @@ public class ConnectionUI : MonoBehaviour
 
         gameObject.SetActive(false);
         canvasHUD.SetActive(true);
+    }
+
+    private void QuitGame()
+    {
+        Application.Quit();
     }
 }
