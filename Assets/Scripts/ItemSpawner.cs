@@ -28,9 +28,7 @@ public class ItemSpawner : NetworkBehaviour
 
     private void SpawnItem()
     {
-
         if (GameManager.Instance == null) return;
-
         if (GameManager.Instance.isWaitingForPlayers.Value) return;
 
         if (!GameManager.Instance.isGameActive.Value)
@@ -41,32 +39,38 @@ public class ItemSpawner : NetworkBehaviour
 
         Vector3 spawnPosition = Vector3.zero;
         bool validPosition = false;
+
         int attempts = 0;
 
         while (!validPosition && attempts < 10)
         {
-            spawnPosition = transform.position + new Vector3(
+            Vector3 randomPosition = transform.position + new Vector3(
                 Random.Range(-spawnArea.x, spawnArea.x),
-                1f,
+                20f,
                 Random.Range(-spawnArea.y, spawnArea.y)
             );
 
-            Collider[] colliders = Physics.OverlapSphere(spawnPosition, checkRadius);
-            bool isOccupied = false;
-
-            foreach (Collider col in colliders)
+            if (Physics.Raycast(randomPosition, Vector3.down, out RaycastHit hit, 40f))
             {
-                
-                if (col.CompareTag("Player") || col.GetComponent<CollectibleItem>() != null)
+                spawnPosition = hit.point + Vector3.up * 1f;
+
+                Collider[] colliders = Physics.OverlapSphere(spawnPosition, checkRadius);
+
+                bool isOccupied = false;
+
+                foreach (Collider col in colliders)
                 {
-                    isOccupied = true;
-                    break;
+                    if (col.CompareTag("Player") || col.GetComponent<CollectibleItem>() != null)
+                    {
+                        isOccupied = true;
+                        break;
+                    }
                 }
-            }
 
-            if (!isOccupied)
-            {
-                validPosition = true; 
+                if (!isOccupied)
+                {
+                    validPosition = true;
+                }
             }
 
             attempts++;
@@ -75,6 +79,7 @@ public class ItemSpawner : NetworkBehaviour
         if (!validPosition) return;
 
         GameObject newItem = Instantiate(itemPrefab, spawnPosition, Quaternion.identity);
+
         int randomIndex = Random.Range(0, availableItems.Length);
 
         newItem.GetComponent<NetworkObject>().Spawn();

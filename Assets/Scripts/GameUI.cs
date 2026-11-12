@@ -14,15 +14,39 @@ public class GameUI : MonoBehaviour
 
     private void Start()
     {
+        if (exitToMenuButton == null)
+        {
+            Transform foundButton = transform.Find("BackButton");
+
+            if (foundButton != null)
+            {
+                exitToMenuButton = foundButton.GetComponent<Button>();
+            }
+        }
+
         if (exitToMenuButton != null)
         {
-            exitToMenuButton.onClick.AddListener(ExitToMenu);
+            exitToMenuButton.onClick.AddListener(() =>
+            {
+                Debug.Log("BACKBUTTON: Click detectado");
+                ExitToMenu();
+            });
+        }
+        else
+        {
+            Debug.LogError("GameUI: No se encontró BackButton");
         }
     }
 
     private void Update()
     {
         if (ScoreManager.Instance == null || GameManager.Instance == null) return;
+
+        if (exitToMenuButton != null)
+        {
+            bool shouldShowButton = GameManager.Instance.isWaitingForPlayers.Value || GameManager.Instance.isGameActive.Value;
+            exitToMenuButton.gameObject.SetActive(shouldShowButton);
+        }
 
         if (GameManager.Instance.isWaitingForPlayers.Value)
         {
@@ -42,10 +66,16 @@ public class GameUI : MonoBehaviour
 
     private void ExitToMenu()
     {
+        Debug.Log("BACKBUTTON: Ejecutando regreso al menú");
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         if (NetworkManager.Singleton != null)
         {
             NetworkManager.Singleton.Shutdown();
         }
+
         SceneManager.LoadScene(0);
     }
 }

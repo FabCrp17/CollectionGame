@@ -42,8 +42,8 @@ public class GameManager : NetworkBehaviour
         isWaitingForPlayers.Value = true;
         isGameActive.Value = false;
 
-        internalTimer = 300f;
-        timeRemaining.Value = 300;
+        internalTimer = 100f;
+        timeRemaining.Value = 100;
     }
 
     private void Update()
